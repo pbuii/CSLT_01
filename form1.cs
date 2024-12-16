@@ -42,6 +42,11 @@ namespace CSLT
             Image other2 = Image.FromFile(@"CSLT\\Images\\other2");
             Image other3 = Image.FromFile(@"CSLT\\Images\\other3");
 
+            // Load sound
+            SoundPlayer backgroundMusic = new SoundPlayer("background.mp3");
+            SoundPlayer catchSound = new SoundPlayer("catch.wav");
+            SoundPlayer missSound = new SoundPlayer("miss2.wav");
+
             // Image 2d array
             Image[,] ImageArray = {{plastic1, plastic2, plastic3}, {organic1, organic2, organic3}, {other1, other2, other3}};
         }
@@ -79,6 +84,7 @@ namespace CSLT
                         score++;
                         x.Top = random.Next(80, 300) * -1;
                         x.Left = random.Next(5, this.ClientSize.Width - 5 - x.Width);
+                        catchSound.Play();
                     }
                     else if (x.Top + x.Height >= this.ClientSize.Height || GetRubbishType(x) != currentCanIndex)
                     {
@@ -87,6 +93,7 @@ namespace CSLT
                         // reset rubbish position
                         x.Top = random.Next(80, 300) * -1;
                         x.Left = random.Next(5, this.ClientSize.Width - 5 - x.Width);
+                        missSound.Play();
                     }
                 }
                 scoreLabel.Text = "Score: " + score;
@@ -138,6 +145,9 @@ namespace CSLT
 
         private void restartGame()
         {
+            // Play background music continuously
+            backgroundMusic.PlayLooping();
+            
             foreach (Control x in this.Controls) 
             {
                 if(x is PictureBox && (string)x.Tag == "rubbish") 
